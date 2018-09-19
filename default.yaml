@@ -1,0 +1,52 @@
+user:
+  categories:
+    - name: 'nav_container_computing'
+      showSeparator: true
+      children:
+        - icon: basic:application_s
+          name: application
+          routerLink: ['app']
+        - icon: basic:gears_s
+          name: configmap
+          routerLink: ['configmap']
+        - icon: basic:storage_s
+          name: nav_storage
+          routerLink: ['pvc']
+        - icon: basic:route_s
+          name: kube_service
+          routerLink: ['service']
+        - icon: basic:resource_management_s
+          name: resource_management
+          routerLink: ['resource_management']
+        - icon: basic:route_outside_s
+          name: route
+          routerLink: ['route']
+        - icon: 'basic:component'
+          name: 'nav_user_service_instance'
+          routerLink: ['service_instance']
+    - name: 'nav_devops'
+      children:
+        - icon: 'basic:jenkins'
+          name: 'jenkins'
+          children:
+            - name: 'nav_jenkins_pipelines'
+              routerLink: ['jenkins', 'pipelines']
+            - name: 'nav_pipeline_history'
+              routerLink: ['jenkins', 'histories']
+    - name: 'nav_app_platform'
+      children:
+        - icon: 'basic:template'
+          name: 'nav_user_service_class'
+          routerLink: ['service_class']
+        - icon: 'basic:app_catalog'
+          name: 'nav_catalog'
+          routerLink: ['app_catalog']
+        - icon: 'basic:puzzle_s'
+          name: 'nav_middleware'
+          routerLink: ['platform-middleware']
+        - icon: 'basic:micro_service'
+          name: 'nav_micro_service'
+          routerLink: ['platform-micro_service']
+        - icon: 'basic:big_data'
+          name: 'nav_big_data'
+          routerLink: ['platform-big_data']

@@ -4,6 +4,7 @@
   "type": "object",
   "title": "Rubick 应用导航配置",
   "required": ["user"],
+  "additionalProperties": false,
   "properties": {
     "user": {
       "title": "Rubick 用户视角导航配置",
@@ -12,26 +13,98 @@
       "additionalProperties": false,
       "properties": {
         "categories": {
+          "title": "用户视角导航配置的分类",
+          "markdownDescription": "以下为一个分类例子:\n\n ![category](img/category.png)",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userViewCategory"
+            "$ref": "#/definitions/category"
           }
         }
       }
     }
   },
-  "additionalProperties": false,
   "definitions": {
-    "userViewCategory": {
-      "$id": "http://alauda.io/rubick/nav-config-user-view-category.json",
+    "category": {
       "type": "object",
       "title": "导航分类配置",
+      "required": ["children"],
+      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string",
-          "title": "导航分类配置标题"
+          "title": "导航分类配置标题, 将会自动本地化",
+          "description": "可不填写"
+        },
+        "showSeparator": {
+          "type": "boolean",
+          "title": "导航分类分割线",
+          "description": "是否显示导航分类下面的分割线，默认不显示"
+        },
+        "children": {
+          "type": "array",
+          "title": "导航分类下的一级导航项目",
+          "items": {
+            "$ref": "#/definitions/primaryItem"
+          }
         }
       }
+    },
+    "primaryItem": {
+      "type": "object",
+      "title": "一级导航项目配置",
+      "description": "一级导航配置。如果有子项目时，一级导航不能有路由配置。",
+      "required": ["icon", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "导航分类配置标题, 将会自动本地化"
+        },
+        "children": {
+          "type": "array",
+          "title": "一级导航下的二级导航项目",
+          "items": {
+            "$ref": "#/definitions/secondaryItem"
+          }
+        },
+        "routerLink": {
+          "$ref": "#/definitions/routerLink"
+        },
+        "icon": {
+          "$ref": "#/definitions/auiIcon"
+        }
+      }
+    },
+    "secondaryItem": {
+      "type": "object",
+      "title": "二级导航项目配置",
+      "description": "二级导航，不能有子项目",
+      "required": ["name", "routerLink"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "导航分类配置标题, 将会自动本地化"
+        },
+        "routerLink": {
+          "$ref": "#/definitions/routerLink"
+        }
+      }
+    },
+    "routerLink": {
+      "type": "array",
+      "title": "路由链接",
+      "markdownDescription": "以下为可选值：\n\n- 应用 - ['app']\n\n- 配置字典 - ['configmap']\n\n- PVC - ['pvc']\n\n- K8S Service - ['service']\n\n- K8S 资源管理 - ['resource_management']\n\n- 外部服务 - ['service_instance']\n\n- jenkins 流水线项目 - ['jenkins', 'pipelines']\n\n- jenkins 流水线历史 - ['jenkins', 'histories']\n\n- 服务目录 - ['service_class']\n\n- 应用目录 - ['app_catalog']\n\n- 中间件 - ['platform-middleware']\n\n- 微服务 - ['platform-micro_service']\n\n- 大数据 - ['platform-big_data']",
+      "items": {
+        "type": ["string", "object"]
+      },
+      "minItems": 1
+    },
+    "auiIcon": {
+      "type": "string",
+      "title": "AUI 图标名称",
+      "description": "参考链接: http://confluence.alaudatech.com/display/DEV/Icon16",
+      "examples": ["basic:application_s"]
     }
   }
 }
