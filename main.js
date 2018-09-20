@@ -11,7 +11,7 @@ function loadFile(path) {
 }
 
 function loadSchema(uri) {
-  document.querySelector('input#schema').value = uri;
+  document.querySelector("input#schema").value = uri;
   monaco.languages.yaml.yamlDefaults.setDiagnosticsOptions({
     validate: true,
     schemas: [
@@ -42,17 +42,22 @@ function configureEditor(defaultYaml) {
       language: "yaml",
       automaticLayout: true
     });
-    
+
+    editor.onDidChangeModelContent(() => {
+      // Following is a test of getting error markers
+      setTimeout(() => {
+        const markers = monaco.editor.getModelMarkers({});
+        console.log(markers);
+      }, 1000);
+    });
+
     // See: https://github.com/Microsoft/vscode/blob/master/src/vs/editor/contrib/quickOpen/quickOpen.ts
     require([
       "vs/editor/contrib/quickOpen/quickOpen",
       "vs/editor/contrib/hover/getHover"
-    ], (quickOpen, { getHover }) => {
-      // Breadcrumbs emulation:
-      editor.onDidChangeCursorSelection(({ selection }) => {
-        const model = editor.getModel();
-        const position = selection.getPosition();
-        quickOpen.getDocumentSymbols(model).then(symbols => {
+    ], async (quickOpen, { getHover }) => {
+      const getSymbolsForPosition = (model, position) => {
+        return quickOpen.getDocumentSymbols(model).then(symbols => {
           symbols = symbols.filter(symbol =>
             symbol.range.containsPosition(position)
           );
@@ -65,8 +70,33 @@ function configureEditor(defaultYaml) {
               return symbol.name;
             }
           });
-          document.querySelector("#path").innerHTML = symbols.join(" > ");
+
+          return symbols;
         });
+      };
+
+      monaco.languages.registerHoverProvider("yaml", {
+        provideHover: async (model, position) => {
+          const symbols = await getSymbolsForPosition(model, position);
+          return {
+            contents: [
+              {
+                value: 'path: ' + symbols.join(" > "),
+                isTrusted: true
+              }
+            ]
+          };
+        }
+      });
+
+      // Breadcrumbs emulation:
+      editor.onDidChangeCursorSelection(async ({ selection }) => {
+        const model = editor.getModel();
+        const position = selection.getPosition();
+
+        const symbols = await getSymbolsForPosition(model, position);
+        document.querySelector("#path").innerHTML = symbols.join(" > ");
+
         getHover(model, position, { onCancellationRequested: () => {} }).then(
           info => {
             console.log(info);
@@ -87,22 +117,22 @@ async function setSchemaAndFile(schemaPath, filePath) {
 
   const file = await loadFile(filePath);
   editor.getModel().setValue(file);
-} 
+}
 
 async function main() {
   const defaultYaml = await loadFile("nav-config.yaml");
   configureEditor(defaultYaml);
-  document.querySelector('button#schema-button').onclick = () => {
-    loadSchema(document.querySelector('input#schema').value);
-  }
+  document.querySelector("button#schema-button").onclick = () => {
+    loadSchema(document.querySelector("input#schema").value);
+  };
 
-  document.querySelector('a#nav-config').onclick = () => {
+  document.querySelector("a#nav-config").onclick = () => {
     setSchemaAndFile(navConfigSchema, "nav-config.yaml");
-  }
+  };
 
-  document.querySelector('a#deployment').onclick = () => {
+  document.querySelector("a#deployment").onclick = () => {
     setSchemaAndFile(k8sDeploymentSchema, "deployment.yaml");
-  }
+  };
 }
 
 main();
