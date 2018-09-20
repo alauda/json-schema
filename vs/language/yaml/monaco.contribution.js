@@ -1,7 +1,0 @@
-/*!-----------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * monaco-yaml version: 1.0.1(b76b6c90bb9389ebf1bbe8d65be13d50cea1acf6)
- * Released under the MIT license
- * https://github.com/pengx17/monaco-yaml/blob/master/LICENSE.md
- *-----------------------------------------------------------------------------*/
-define("vs/language/yaml/monaco.contribution",["require","exports"],function(e,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var t=monaco.Emitter,a=function(){function e(e,n){this._onDidChange=new t,this._languageId=e,this.setDiagnosticsOptions(n)}return Object.defineProperty(e.prototype,"onDidChange",{get:function(){return this._onDidChange.event},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"languageId",{get:function(){return this._languageId},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"diagnosticsOptions",{get:function(){return this._diagnosticsOptions},enumerable:!0,configurable:!0}),e.prototype.setDiagnosticsOptions=function(e){this._diagnosticsOptions=e||Object.create(null),this._onDidChange.fire(this)},e}();n.LanguageServiceDefaultsImpl=a;var i=new a("yaml",{validate:!0,schemas:[]});monaco.languages.yaml={yamlDefaults:i},monaco.languages.register({id:"yaml",extensions:[".yaml",".yml"],aliases:["YAML","yaml","YML","yml"],mimetypes:["application/x-yaml"]}),monaco.languages.onLanguage("yaml",function(){e(["vs/language/yaml/yamlMode"],function(e){return e.setupMode(i)})})});

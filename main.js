@@ -1,14 +1,31 @@
-function loadDefaultConfig() {
-  return fetch("default.yaml").then(res => res.text());
+let editor;
+
+const k8sDeploymentSchema =
+  "https://raw.githubusercontent.com/garethr/kubernetes-json-schema/master/master/deployment.json";
+
+const navConfigSchema =
+  "https://pengx17.github.io/json-schema/alauda.io/rubick/nav-config.json";
+
+function loadFile(path) {
+  return fetch(path).then(res => res.text());
 }
 
-function fetchSchema() {
-  return fetch("alauda.io/rubick/nav-config.json").then(res => res.json());
+function loadSchema(uri) {
+  document.querySelector('input#schema').value = uri;
+  monaco.languages.yaml.yamlDefaults.setDiagnosticsOptions({
+    validate: true,
+    schemas: [
+      {
+        uri,
+        fileMatch: ["*"]
+      }
+    ]
+  });
 }
 
-function configureEditor(schema, defaultYaml) {
+function configureEditor(defaultYaml) {
   const paths = {
-    vs: "vs"
+    vs: "lib/v0/vs"
   };
 
   require.config({
@@ -19,23 +36,13 @@ function configureEditor(schema, defaultYaml) {
     "vs/basic-languages/monaco.contribution",
     "vs/language/yaml/monaco.contribution"
   ], function() {
-    const editor = monaco.editor.create(document.getElementById("container"), {
+    loadSchema(navConfigSchema);
+    editor = monaco.editor.create(document.getElementById("container"), {
       value: defaultYaml,
       language: "yaml",
       automaticLayout: true
     });
-
-    monaco.languages.yaml.yamlDefaults.setDiagnosticsOptions({
-      validate: true,
-      schemas: [
-        {
-          uri: undefined,
-          fileMatch: ["*"],
-          schema: schema
-        }
-      ]
-    });
-
+    
     // See: https://github.com/Microsoft/vscode/blob/master/src/vs/editor/contrib/quickOpen/quickOpen.ts
     require([
       "vs/editor/contrib/quickOpen/quickOpen",
@@ -75,10 +82,27 @@ function configureEditor(schema, defaultYaml) {
   });
 }
 
+async function setSchemaAndFile(schemaPath, filePath) {
+  loadSchema(schemaPath);
+
+  const file = await loadFile(filePath);
+  editor.getModel().setValue(file);
+} 
+
 async function main() {
-  const schema = await fetchSchema();
-  const defaultYaml = await loadDefaultConfig();
-  configureEditor(schema, defaultYaml);
+  const defaultYaml = await loadFile("nav-config.yaml");
+  configureEditor(defaultYaml);
+  document.querySelector('button#schema-button').onclick = () => {
+    loadSchema(document.querySelector('input#schema').value);
+  }
+
+  document.querySelector('a#nav-config').onclick = () => {
+    setSchemaAndFile(navConfigSchema, "nav-config.yaml");
+  }
+
+  document.querySelector('a#deployment').onclick = () => {
+    setSchemaAndFile(k8sDeploymentSchema, "deployment.yaml");
+  }
 }
 
 main();
