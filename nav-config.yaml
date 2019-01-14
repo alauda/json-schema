@@ -7,37 +7,34 @@ user:
           name: application
           routerLink: ['app']
         - icon: basic:gears_s
-          name: configmap
+          name: config
           routerLink: ['configmap']
+        - icon: basic:route_s
+          name: network
+          children:
+            - name: kube_service
+              routerLink: ['service']
+            - name: kube_ingress
+              routerLink: ['ingress']
+            - name: network_policy
+              routerLink: ['network_policy']
         - icon: basic:storage_s
           name: nav_storage
           routerLink: ['pvc']
-        - icon: basic:route_s
-          name: kube_service
-          routerLink: ['service']
         - icon: basic:resource_management_s
           name: resource_management
           routerLink: ['resource_management']
-        - icon: basic:route_outside_s
-          name: route
-          routerLink: ['route']
-        - icon: 'basic:component'
-          name: 'nav_user_service_instance'
-          routerLink: ['service_instance']
     - name: 'nav_devops'
       children:
         - icon: 'basic:jenkins'
-          name: 'jenkins'
+          name: 'nav_jenkins_pipelines'
           children:
             - name: 'nav_jenkins_pipelines'
               routerLink: ['jenkins', 'pipelines']
-            - name: 'nav_pipeline_history'
+            - name: 'nav_jenkins_histories'
               routerLink: ['jenkins', 'histories']
     - name: 'nav_app_platform'
       children:
-        - icon: 'basic:template'
-          name: 'nav_user_service_class'
-          routerLink: ['service_class']
         - icon: 'basic:app_catalog'
           name: 'nav_catalog'
           routerLink: ['app_catalog']
@@ -50,3 +47,85 @@ user:
         - icon: 'basic:big_data'
           name: 'nav_big_data'
           routerLink: ['platform-big_data']
+admin:
+  categories:
+    - name: 'nav_infrastructure'
+      showSeparator: true
+      children:
+        - icon: basic:server_s
+          name: cluster
+          children:
+            - name: cluster
+              routerLink: ['cluster']
+            - name: resource_management
+              routerLink: ['resource_management']
+        - icon: basic:internet
+          name: network
+          children:
+            - name: load_balancer
+              routerLink: ['load_balancer']
+            - name: domain
+              routerLink: ['domain']
+            - name: subnet
+              routerLink: ['subnet']
+        - icon: basic:storage_s
+          name: storage
+          children:
+            - name: pv
+              routerLink: ['storage/pv']
+            - name: k8s_storageclasses
+              routerLink: ['storage/storageclass']
+    - name: 'devops'
+      showSeparator: true
+      children:
+        - icon: basic:images
+          name: nav_image
+          routerLink: ['image/repository']
+        - icon: basic:pipeline_template
+          name: jenkins_pipeline_template
+          routerLink: ['jenkins/templates']
+        - icon: basic:devops_tools_s
+          name: nav_tool_chain
+          routerLink: ['tool_chain']
+        - icon: basic:credential_s
+          name: tool_chain_secrets
+          routerLink: ['secret']
+    - name: 'nav_ops'
+      showSeparator: true
+      children:
+        - icon: basic:monitor
+          name: monitor_dashboard
+          routerLink: ['monitor']
+        - icon: basic:log
+          name: logs
+          routerLink: ['log']
+        - icon: basic:event
+          name: event
+          routerLink: ['event']
+        - icon: basic:audit
+          name: audit
+          routerLink: ['audit']
+        - icon: basic:alarm_s
+          name: alarm
+          routerLink: ['alarm']
+        - icon: basic:notice_s
+          name: notification
+          routerLink: ['notification']
+    - name: nav_management
+      showSeparator: true
+      children:
+        - icon: basic:project_s
+          name: projects
+          routerLink: ['projects']
+        - icon: basic:member_s
+          name: rbac
+          routerLink: ['rbac']
+    - name: nav_extension
+      showSeparator: true
+      children:
+        - icon: basic:app_catalog
+          name: nav_catalog
+          routerLink: ['app-catalog']
+        - icon: basic:integration
+          name: nav_integration_center
+          routerLink: ['integration_center']
